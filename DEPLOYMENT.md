@@ -1,29 +1,23 @@
 # CrownPilot Deployment Guide
 
 ## Gereksinimler
-- Xcode 16+ 
-- Apple Developer hesabı (Team ID: YOUR_TEAM_ID)
+- Xcode 16+
+- Apple Developer hesabi
 - XcodeGen (`brew install xcodegen`)
 - Transporter (Mac App Store'dan indir)
 
-## Proje Oluştur
+## Proje Olustur
 ```bash
-cd /Users/h2o/Projects/mobile/CrownPilot
+cd CrownPilot
 xcodegen generate
 ```
 
-## 1. Doğrudan Apple Watch'a Yükleme (Development)
+## 1. Dogrudan Apple Watch'a Yukleme (Development)
 
-### Ön Koşullar
-- iPhone USB ile Mac'e bağlı
-- Apple Watch'ta Developer Mode açık (Ayarlar → Gizlilik ve Güvenlik → Geliştirici Modu)
-- Watch UDID Apple Developer Portal'da kayıtlı
-
-### Kayıtlı Cihazlar
-| Cihaz | UDID | Tür |
-|-------|------|-----|
-| My Apple Watch | YOUR_WATCH_UDID | Apple Watch Ultra (1st Gen) |
-| My iPhone | YOUR_IPHONE_UDID | iPhone 11 |
+### On Kosullar
+- iPhone USB ile Mac'e bagli
+- Apple Watch'ta Developer Mode acik (Ayarlar → Gizlilik ve Guvenlik → Gelistirici Modu)
+- Watch UDID Apple Developer Portal'da kayitli
 
 ### Build & Install
 ```bash
@@ -32,21 +26,24 @@ xcodebuild clean build \
   -project CrownPilot.xcodeproj \
   -scheme "CrownPilot Watch App" \
   -destination 'generic/platform=watchOS' \
-  DEVELOPMENT_TEAM=YOUR_TEAM_ID \
+  DEVELOPMENT_TEAM=<YOUR_TEAM_ID> \
   CODE_SIGN_STYLE=Automatic \
   ONLY_ACTIVE_ARCH=NO \
   -allowProvisioningUpdates
 
+# Cihaz UUID'sini bul
+xcrun devicectl list devices
+
 # Install
 xcrun devicectl device install app \
-  --device YOUR_DEVICE_UUID \
+  --device <DEVICE_UUID> \
   --timeout 120 \
   ~/Library/Developer/Xcode/DerivedData/CrownPilot-*/Build/Products/Debug-watchos/CrownPilot.app
 ```
 
-## 2. TestFlight / App Store Dağıtım
+## 2. TestFlight / App Store Dagitim
 
-### Archive Oluştur
+### Archive Olustur
 ```bash
 rm -rf ~/Library/Developer/Xcode/DerivedData/CrownPilot-*
 
@@ -56,7 +53,7 @@ xcodebuild \
   -destination 'generic/platform=watchOS' \
   -archivePath /tmp/CrownPilot.xcarchive \
   archive \
-  DEVELOPMENT_TEAM=YOUR_TEAM_ID \
+  DEVELOPMENT_TEAM=<YOUR_TEAM_ID> \
   CODE_SIGN_STYLE=Automatic \
   ONLY_ACTIVE_ARCH=NO \
   SKIP_INSTALL=NO \
@@ -90,49 +87,41 @@ xcodebuild -exportArchive \
 ```
 
 ### Upload to App Store Connect
-watchOS standalone uygulamalar için `altool` CLI desteklemiyor.
 
-**Seçenek A: Transporter App (Önerilen)**
+**Secenek A: Transporter App (Onerilen)**
 1. Mac App Store'dan "Transporter" indir
-2. Transporter'ı aç → Apple ID ile giriş yap
-3. `/tmp/CrownPilotExport/CrownPilot.ipa` dosyasını sürükle-bırak
-4. "Deliver" tıkla
+2. Transporter'i ac → Apple ID ile giris yap
+3. `/tmp/CrownPilotExport/CrownPilot.ipa` dosyasini surukle-birak
+4. "Deliver" tikla
 
-**Seçenek B: Xcode Organizer**
-1. Archive'ı Xcode Organizer'da aç: `open /tmp/CrownPilot.xcarchive`
-2. Distribute App → seçenekleri takip et
+**Secenek B: Xcode Organizer**
+1. Archive'i Xcode Organizer'da ac: `open /tmp/CrownPilot.xcarchive`
+2. Distribute App → secenekleri takip et
 
 ### TestFlight Tester Ekleme
-1. [appstoreconnect.apple.com](https://appstoreconnect.apple.com) → Crown Pilot
-2. TestFlight sekmesi → Internal Testing → "+" tıkla
+1. appstoreconnect.apple.com → Crown Pilot
+2. TestFlight sekmesi → Internal Testing → "+" tikla
 3. Tester e-posta adresi ekle
-4. ⚠️ TestFlight 13+ yaş gerektirir
 
 ## 3. Kimlik Bilgileri
-Kimlik bilgileri `.secrets` dosyasında saklanır (gitignore'da):
+Kimlik bilgileri `.secrets` dosyasinda saklanir (gitignore'da):
 ```
-APPLE_ID=your-apple-id@example.com
+APPLE_ID=<your-apple-id>
 APP_SPECIFIC_PASSWORD=<app-specific-password>
-TEAM_ID=YOUR_TEAM_ID
+TEAM_ID=<your-team-id>
 BUNDLE_ID=com.hakan.CrownPilot.watchkitapp
 ```
 
-## App Store Connect Bilgileri
-- **App Name**: Crown Pilot
-- **Bundle ID**: com.hakan.CrownPilot.watchkitapp
-- **Apple ID**: YOUR_APP_ID
-- **SKU**: crownpilot
-
 ## Sorun Giderme
 
-### "Developer Mode is disabled" hatası
-Saatte: Ayarlar → Gizlilik ve Güvenlik → Geliştirici Modu → Aç → Yeniden Başlat
+### "Developer Mode is disabled" hatasi
+Saatte: Ayarlar → Gizlilik ve Guvenlik → Gelistirici Modu → Ac → Yeniden Baslat
 
-### "Provisioning profile cannot be installed" hatası
+### "Provisioning profile cannot be installed" hatasi
 1. Apple Developer Portal'da cihaz UDID'sini kaydet
 2. Eski profilleri sil: `rm ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/*.mobileprovision`
 3. Clean build: `rm -rf ~/Library/Developer/Xcode/DerivedData/CrownPilot-*`
 4. `-allowProvisioningUpdates` ile yeniden build et
 
-### "no DDI" hatası
-Saatte Developer Mode açıkken: `xcrun devicectl manage ddis update`
+### "no DDI" hatasi
+Saatte Developer Mode acikken: `xcrun devicectl manage ddis update`

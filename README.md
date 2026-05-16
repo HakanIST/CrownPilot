@@ -118,7 +118,7 @@ xcodebuild clean build \
   -project CrownPilot.xcodeproj \
   -scheme "CrownPilot Watch App" \
   -destination 'generic/platform=watchOS' \
-  DEVELOPMENT_TEAM=YOUR_TEAM_ID \
+  DEVELOPMENT_TEAM=<YOUR_TEAM_ID> \
   CODE_SIGN_STYLE=Automatic \
   -allowProvisioningUpdates
 
