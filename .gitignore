@@ -35,3 +35,6 @@ build/
 *.ipa
 *.xcarchive
 CrownPilot Watch App*/
+
+# Secrets
+.secrets
