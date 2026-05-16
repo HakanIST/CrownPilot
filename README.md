@@ -5,7 +5,7 @@
 <h1 align="center">👑 Crown Pilot</h1>
 
 <p align="center">
-  <b>A side-scrolling boss-fight game built entirely for Apple Watch using SpriteKit and SwiftUI.</b>
+  <b>An endless sky-flyer game built for Apple Watch using SpriteKit and SwiftUI.</b>
 </p>
 
 <p align="center">
@@ -20,37 +20,38 @@
 
 ## 🎮 About
 
-**Crown Pilot** is a fast-paced action game designed from the ground up for Apple Watch. Use the **Digital Crown** to pilot a winged character up and down, dodge incoming bombs, and take down a shield-protected boss — all on your wrist.
+**Crown Pilot** is an endless side-scrolling sky-flyer designed from the ground up for Apple Watch. Use the **Digital Crown** to control altitude, dodge floating islands, airships and storm clouds, fly through golden rings for bonus distance, and tap to **boost** — all on your wrist.
 
 ### Features
 
-- 🕹️ **Digital Crown controls** — Precise analog movement via the watch's crown
-- 🔫 **Auto-fire** — Your pilot shoots projectiles automatically every 0.3 seconds
-- 🛡️ **Shield mechanic** — Boss shield cycles on (5s) and off (3s); time your attacks
-- 💥 **Big Shot** — Tap the screen when shields are down to unleash a heavy attack (20 damage)
-- 💣 **Bomb dodging** — Destroy incoming bombs for bonus points
-- ⭐ **Scoring system** — Earn points for hits, bomb kills, and big shots
-- 🎨 **Pure SpriteKit** — No external assets needed; all visuals are procedurally generated
+- 🕹️ **Digital Crown flight** — Velocity-based controls with gravity and air drag
+- 💨 **Tap to boost** — 2.2× speed burst for dodging and distance
+- 🏝️ **Obstacles** — Floating islands, airships with propellers, storm clouds with lightning
+- 💍 **Golden rings** — Fly through them for +30 metres bonus
+- 🌅 **Parallax sky** — Gradient sky, sun glow, multi-layer scrolling clouds
+- 👨‍✈️ **Rayman-style pilot** — Headband, goggles, floating hands, wing-pack
+- 📊 **Best score tracking** — Persistent high score via UserDefaults
+- 🎬 **Three screens** — Title → Gameplay → Game Over with score card
 
 ---
 
 ## 🏗️ Architecture
 
-The project is intentionally minimal — just **3 Swift files**, no dependencies:
-
 ```
 CrownPilot/
 ├── CrownPilotApp.swift    # @main entry point
-├── ContentView.swift      # SwiftUI layer: Digital Crown + tap input + SpriteView
-├── GameScene.swift        # All game logic: player, boss, shield, bullets, collisions
-└── SETUP.md               # Step-by-step setup guide
+├── ContentView.swift      # SwiftUI: Digital Crown velocity input + tap boost + SpriteView
+├── GameScene.swift        # Game loop: state machine, physics, spawning, collisions, HUD
+├── GameEntities.swift     # Entity factories: pilot, island, airship, storm, ring, cloud
+├── SETUP.md               # Step-by-step setup guide
+└── web-prototype/         # Original React/SVG design prototype
 ```
 
 | Layer | Responsibility |
 |-------|---------------|
-| `CrownPilotApp` | App lifecycle, launches `ContentView` |
-| `ContentView` | Captures Digital Crown rotation (0.0–1.0) and tap gestures, renders `SpriteView` |
-| `GameScene` | SpriteKit scene — player movement, auto-fire, boss AI, shield cycle, collision detection, scoring, win/restart flow |
+| `ContentView` | Crown delta → velocity input, tap → boost/start, renders `SpriteView` |
+| `GameScene` | State machine (title/playing/gameOver), physics, spawning, collisions, HUD |
+| `GameEntities` | Visual factories for pilot character, obstacles, collectibles, clouds |
 
 ---
 
@@ -61,31 +62,19 @@ CrownPilot/
 - **macOS** with **Xcode 15+** installed
 - watchOS 10+ Simulator (included with Xcode)
 
-### Option A: XcodeGen (Recommended)
+### Using XcodeGen (Recommended)
 
 ```bash
-# Install XcodeGen if you don't have it
 brew install xcodegen
-
-# Clone and generate
 git clone https://github.com/HakanIST/CrownPilot.git
 cd CrownPilot
 xcodegen generate
-
-# Open in Xcode
 open CrownPilot.xcodeproj
 ```
 
-Select an **Apple Watch simulator** from the device picker and hit **⌘R**.
+Select an **Apple Watch simulator** → **⌘R**.
 
-### Option B: Manual Xcode Setup
-
-1. Create a new **watchOS → App** project in Xcode named `CrownPilot`
-2. Replace the contents of `CrownPilotApp.swift` and `ContentView.swift` with the files from this repo
-3. Add a new Swift file named `GameScene.swift` and paste the contents
-4. Select a Watch simulator and run
-
-> 📖 For a detailed walkthrough, see [SETUP.md](SETUP.md).
+> 📖 For detailed instructions, see [SETUP.md](SETUP.md).
 
 ---
 
@@ -93,54 +82,47 @@ Select an **Apple Watch simulator** from the device picker and hit **⌘R**.
 
 | Action | Simulator | Real Watch |
 |--------|-----------|------------|
-| Move up/down | `⇧⌘↑` / `⇧⌘↓` or trackpad scroll | Rotate Digital Crown |
-| Big Shot | Click on the watch screen | Tap the screen |
+| Fly up/down | `⇧⌘↑` / `⇧⌘↓` or trackpad scroll | Rotate Digital Crown |
+| Boost | Click on the watch screen | Tap the screen |
 
 ### Game Mechanics
 
-- **Player** (pink circle with cyan wings): Auto-fires cyan bullets every 0.3s
-- **Boss** (yellow oval, 100 HP): Protected by a cycling energy shield
-- **Shield cycle**: 5 seconds ON → 3 seconds OFF → repeat
-  - Shield ON: bullets bounce off, boss is invulnerable
-  - Shield OFF: boss glows red — attack now!
-- **Big Shot**: Tap to fire a powerful red/yellow projectile (20 damage). Only effective when shields are down
-- **Bombs**: Brown bombs drift from right to left. Shoot them for +5 points
+- **Pilot** — Rayman-style character with headband and goggles. Auto-flies forward.
+- **Digital Crown** — Adds velocity. Gravity pulls down, air drag slows movement.
+- **Boost** — Tap for a 2.2× speed burst (0.7 seconds).
+- **Obstacles** — Floating islands, airships, storm clouds. Hit one = crash.
+- **Golden Rings** — Fly through for +30 metres. They wobble and shine.
+- **Speed** — Gradually increases as you fly further.
 
 ### Scoring
 
-| Event | Points |
-|-------|--------|
-| Normal hit on boss | +1 |
-| Bomb destroyed | +5 |
-| Big Shot hit on boss | +25 |
-
-Boss HP reaches 0 → **WIN!** → Tap to restart.
+Distance flown in **metres**. Best score persists between sessions.
 
 ---
 
 ## ⌚ Deploy to Real Apple Watch
 
-1. **Xcode → Settings → Accounts** → Sign in with your Apple ID
-2. Select your **Personal Team** under Signing & Capabilities
-3. Connect your iPhone (paired with Apple Watch) via USB
-4. Enable **Developer Mode** on both iPhone and Apple Watch (Settings → Privacy & Security)
-5. Select your Apple Watch from the device picker → **⌘R**
+1. **Xcode → Settings → Accounts** → Sign in with Apple ID
+2. Select **Personal Team** under Signing & Capabilities
+3. Connect iPhone (paired with Apple Watch) via USB
+4. Enable **Developer Mode** on iPhone and Apple Watch
+5. Select your Apple Watch → **⌘R**
 
-> ⚠️ Free provisioning expires after 7 days. A $99/year Apple Developer membership removes this limitation.
+> ⚠️ Free provisioning expires after 7 days.
 
 ---
 
-## 🛠️ Customization Ideas
+## 🎨 Web Prototype
 
-- Replace shapes with sprite images: `SKSpriteNode(imageNamed: "pilot")`
-- Add sound effects: `SKAction.playSoundFileNamed("shoot.wav", waitForCompletion: false)`
-- Add haptic feedback: `WKInterfaceDevice.current().play(.success)`
-- Multiple boss phases with different attack patterns
-- Player health system and game-over screen
-- Level progression with increasing difficulty
+The `web-prototype/` directory contains the original interactive design built with React and SVG. Open `web-prototype/index.html` in a browser to explore:
+
+- Live playable prototype with scroll/click controls
+- Title, gameplay, and game-over screens
+- Three sky moods (day, dusk, night)
+- Anatomy diagrams (pilot sprites, sky entities, crown mapping)
 
 ---
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+[MIT License](LICENSE)

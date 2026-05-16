@@ -2,24 +2,22 @@
 //  ContentView.swift
 //  Crown Pilot — Watch App
 //
-//  Bu View:
-//   - SpriteKit sahnesini ekrana basar (SpriteView)
-//   - Digital Crown dönüşünü yakalar ve karakteri yukarı/aşağı taşır
-//   - Ekrana dokunmayı yakalar ve "büyük ateş" tetikler
+//  SwiftUI layer:
+//   - Digital Crown rotation → velocity delta for the pilot
+//   - Tap gesture → boost or start game
+//   - SpriteView renders the game scene
 //
 
 import SwiftUI
 import SpriteKit
 
 struct ContentView: View {
-    // Digital Crown'un mevcut değeri. 0.0 (en alt) ile 1.0 (en üst) arası.
-    @State private var crownValue: Double = 0.5
+    // Large range to avoid frequent wrap-around jitter
+    @State private var crownValue: Double = 0.0
 
-    // Oyun sahnesini sadece BİR KEZ oluşturuyoruz. View her render olduğunda
-    // sıfırdan oluşturursak oyun her seferinde sıfırlanır.
     private static let scene: GameScene = {
         let s = GameScene(size: CGSize(width: 200, height: 250))
-        s.scaleMode = .resizeFill // Apple Watch ekranına otomatik uyar
+        s.scaleMode = .resizeFill
         return s
     }()
 
@@ -29,18 +27,22 @@ struct ContentView: View {
             .focusable()
             .digitalCrownRotation(
                 $crownValue,
-                from: 0.0,
-                through: 1.0,
-                by: 0.005,
-                sensitivity: .medium,
-                isContinuous: false,
+                from: -500.0,
+                through: 500.0,
+                by: 0.1,
+                sensitivity: .high,
+                isContinuous: true,
                 isHapticFeedbackEnabled: true
             )
-            .onChange(of: crownValue) { _, newValue in
-                Self.scene.setPlayerNormalizedY(newValue)
+            .onChange(of: crownValue) { oldValue, newValue in
+                var delta = newValue - oldValue
+                // Handle wrap-around (range width = 1000)
+                if delta > 500 { delta -= 1000 }
+                if delta < -500 { delta += 1000 }
+                Self.scene.applyCrownInput(delta)
             }
             .onTapGesture {
-                Self.scene.tryBigShot()
+                Self.scene.handleTap()
             }
     }
 }

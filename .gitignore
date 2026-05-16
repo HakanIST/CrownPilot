@@ -29,3 +29,9 @@ web-prototype/uploads/pasted-1778930198144-0.png
 web-prototype/watch-ultra.jsx
 CrownPilot.zip
 KURULUM.md
+
+# Build artifacts
+build/
+*.ipa
+*.xcarchive
+CrownPilot Watch App*/
