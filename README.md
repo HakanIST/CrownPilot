@@ -1,11 +1,12 @@
 <p align="center">
-  <img src="banner.png" alt="Crown Pilot Banner" width="100%">
+  <img src="image.png" alt="Crown Pilot Screenshots" width="100%">
 </p>
 
-<h1 align="center">👑 Crown Pilot</h1>
+<h1 align="center">Crown Pilot</h1>
 
 <p align="center">
-  <b>An endless sky-flyer game built for Apple Watch using SpriteKit and SwiftUI.</b>
+  <b>An endless sky-flyer game for Apple Watch, built with SpriteKit and SwiftUI.</b><br>
+  <i>Apple Watch icin SpriteKit ve SwiftUI ile yapilmis sonsuz ucus oyunu.</i>
 </p>
 
 <p align="center">
@@ -13,38 +14,41 @@
   <img src="https://img.shields.io/badge/swift-5.0+-orange?logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/framework-SpriteKit-purple" alt="SpriteKit">
   <img src="https://img.shields.io/badge/UI-SwiftUI-green" alt="SwiftUI">
-  <img src="https://img.shields.io/github/license/HakanIST/CrownPilot" alt="License">
 </p>
 
 ---
 
-## 🎮 About
+## About / Hakkinda
 
-**Crown Pilot** is an endless side-scrolling sky-flyer designed from the ground up for Apple Watch. Use the **Digital Crown** to control altitude, dodge floating islands, airships and storm clouds, fly through golden rings for bonus distance, and tap to **boost** — all on your wrist.
+**Crown Pilot** is an endless side-scrolling sky-flyer designed from the ground up for Apple Watch. Use the **Digital Crown** to control altitude, dodge floating islands, airships and storm clouds, fly through golden rings for bonus distance, and tap to **boost**.
 
-### Features
+**Crown Pilot**, Apple Watch icin sifirdan tasarlanmis sonsuz yana kayan bir ucus oyunudur. **Digital Crown** ile yuksekligi kontrol edin, yuzen adalari, hava gemilerini ve firtina bulutlarini atlatma yapin, bonus mesafe icin altin halkalardan gecin ve **boost** icin dokunun.
 
-- 🕹️ **Digital Crown flight** — Velocity-based controls with gravity and air drag
-- 💨 **Tap to boost** — 2.2× speed burst for dodging and distance
-- 🏝️ **Obstacles** — Floating islands, airships with propellers, storm clouds with lightning
-- 💍 **Golden rings** — Fly through them for +30 metres bonus
-- 🌅 **Parallax sky** — Gradient sky, sun glow, multi-layer scrolling clouds
-- 👨‍✈️ **Rayman-style pilot** — Headband, goggles, floating hands, wing-pack
-- 📊 **Best score tracking** — Persistent high score via UserDefaults
-- 🎬 **Three screens** — Title → Gameplay → Game Over with score card
+### Features / Ozellikler
+
+| EN | TR |
+|----|----|
+| Digital Crown flight — Velocity-based controls with gravity and air drag | Digital Crown ucusu — Yercekimi ve hava surtusmeli hiz tabanli kontroller |
+| Tap to boost — 2.2x speed burst for dodging | Dokunarak hizlanma — Kacis icin 2.2x hiz patlamasi |
+| Obstacles — Floating islands, airships, storm clouds | Engeller — Yuzen adalar, hava gemileri, firtina bulutlari |
+| Golden rings — Fly through for +30 metres bonus | Altin halkalar — Icinden gecin +30 metre bonus |
+| Parallax sky — Gradient sky, sun glow, multi-layer clouds | Parallaks gokyuzu — Dereceli gokyuzu, gunes isigi, cok katmanli bulutlar |
+| Rayman-style pilot — Headband, goggles, floating hands | Rayman tarzi pilot — Bandana, gozluk, havada duran eller |
+| Best score tracking — Persistent high score | En iyi skor takibi — Kalici yuksek skor |
 
 ---
 
-## 🏗️ Architecture
+## Architecture / Mimari
 
 ```
 CrownPilot/
-├── CrownPilotApp.swift    # @main entry point
-├── ContentView.swift      # SwiftUI: Digital Crown velocity input + tap boost + SpriteView
+├── CrownPilotApp.swift    # @main entry point / Giris noktasi
+├── ContentView.swift      # SwiftUI: Digital Crown input + tap boost + SpriteView
 ├── GameScene.swift        # Game loop: state machine, physics, spawning, collisions, HUD
 ├── GameEntities.swift     # Entity factories: pilot, island, airship, storm, ring, cloud
-├── SETUP.md               # Step-by-step setup guide
-└── web-prototype/         # Original React/SVG design prototype
+├── Assets.xcassets/       # App icon and asset catalog
+├── DEPLOYMENT.md          # Deployment and distribution guide / Dagitim rehberi
+└── project.yml            # XcodeGen project definition
 ```
 
 | Layer | Responsibility |
@@ -55,74 +59,81 @@ CrownPilot/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start / Hizli Baslangic
 
-### Prerequisites
+### Prerequisites / Gereksinimler
 
-- **macOS** with **Xcode 15+** installed
+- **macOS** with **Xcode 16+**
 - watchOS 10+ Simulator (included with Xcode)
+- XcodeGen: `brew install xcodegen`
 
-### Using XcodeGen (Recommended)
+### Build & Run / Derleme ve Calistirma
 
 ```bash
-brew install xcodegen
 git clone https://github.com/HakanIST/CrownPilot.git
 cd CrownPilot
 xcodegen generate
 open CrownPilot.xcodeproj
 ```
 
-Select an **Apple Watch simulator** → **⌘R**.
+Select an Apple Watch simulator, then press **Cmd+R**.
 
-> 📖 For detailed instructions, see [SETUP.md](SETUP.md).
+Apple Watch simulatorunu secin, ardindan **Cmd+R** basin.
+
+> For detailed setup, see [SETUP.md](SETUP.md). For deployment to real devices, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ---
 
-## 🎯 How to Play
+## How to Play / Nasil Oynanir
 
-| Action | Simulator | Real Watch |
-|--------|-----------|------------|
-| Fly up/down | `⇧⌘↑` / `⇧⌘↓` or trackpad scroll | Rotate Digital Crown |
-| Boost | Click on the watch screen | Tap the screen |
+| Action / Aksiyon | Simulator / Simulator | Real Watch / Gercek Saat |
+|-------------------|----------------------|--------------------------|
+| Fly up/down / Yukari-asagi uc | Scroll or Shift+Cmd+Arrow | Rotate Digital Crown |
+| Boost / Hizlan | Click on watch screen | Tap the screen / Ekrana dokun |
 
-### Game Mechanics
+### Game Mechanics / Oyun Mekanikleri
 
 - **Pilot** — Rayman-style character with headband and goggles. Auto-flies forward.
 - **Digital Crown** — Adds velocity. Gravity pulls down, air drag slows movement.
-- **Boost** — Tap for a 2.2× speed burst (0.7 seconds).
+- **Boost** — Tap for a 2.2x speed burst (0.7 seconds).
 - **Obstacles** — Floating islands, airships, storm clouds. Hit one = crash.
 - **Golden Rings** — Fly through for +30 metres. They wobble and shine.
 - **Speed** — Gradually increases as you fly further.
 
-### Scoring
+### Scoring / Puanlama
 
 Distance flown in **metres**. Best score persists between sessions.
 
----
-
-## ⌚ Deploy to Real Apple Watch
-
-1. **Xcode → Settings → Accounts** → Sign in with Apple ID
-2. Select **Personal Team** under Signing & Capabilities
-3. Connect iPhone (paired with Apple Watch) via USB
-4. Enable **Developer Mode** on iPhone and Apple Watch
-5. Select your Apple Watch → **⌘R**
-
-> ⚠️ Free provisioning expires after 7 days.
+Ucurulan mesafe **metre** cinsinden. En iyi skor oturumlar arasi saklanir.
 
 ---
 
-## 🎨 Web Prototype
+## Deploy to Apple Watch / Apple Watch'a Yukleme
 
-The `web-prototype/` directory contains the original interactive design built with React and SVG. Open `web-prototype/index.html` in a browser to explore:
+### Direct Install / Dogrudan Yukleme
 
-- Live playable prototype with scroll/click controls
-- Title, gameplay, and game-over screens
-- Three sky moods (day, dusk, night)
-- Anatomy diagrams (pilot sprites, sky entities, crown mapping)
+```bash
+# Build
+xcodebuild clean build \
+  -project CrownPilot.xcodeproj \
+  -scheme "CrownPilot Watch App" \
+  -destination 'generic/platform=watchOS' \
+  DEVELOPMENT_TEAM=YOUR_TEAM_ID \
+  CODE_SIGN_STYLE=Automatic \
+  -allowProvisioningUpdates
+
+# Install to watch
+xcrun devicectl device install app \
+  --device <DEVICE_UUID> \
+  ~/Library/Developer/Xcode/DerivedData/CrownPilot-*/Build/Products/Debug-watchos/CrownPilot.app
+```
+
+> For full deployment guide including TestFlight, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+> Tam dagitim rehberi (TestFlight dahil) icin [DEPLOYMENT.md](DEPLOYMENT.md) dosyasina bakin.
 
 ---
 
-## 📄 License
+## License / Lisans
 
 [MIT License](LICENSE)
