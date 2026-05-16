@@ -38,3 +38,4 @@ CrownPilot Watch App*/
 
 # Secrets
 .secrets
+*.mobileprovision
