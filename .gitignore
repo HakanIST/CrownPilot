@@ -1,0 +1,31 @@
+# Xcode
+*.xcodeproj/
+xcuserdata/
+*.xcworkspace/
+DerivedData/
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xccheckout
+*.moved-aside
+
+# XcodeGen
+project.yml
+
+# macOS
+.DS_Store
+*.swp
+*~
+web-prototype/app.jsx
+web-prototype/crown-pilot.jsx
+web-prototype/design-canvas.jsx
+web-prototype/index.html
+web-prototype/scenery.jsx
+web-prototype/styles.css
+web-prototype/tweaks-panel.jsx
+web-prototype/uploads/pasted-1778930198144-0.png
+web-prototype/watch-ultra.jsx
+CrownPilot.zip
+KURULUM.md
