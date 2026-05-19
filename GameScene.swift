@@ -30,9 +30,12 @@ class GameScene: SKScene {
     private var cloudLayerBack: SKNode!
     private var cloudLayerMid: SKNode!
 
+    // MARK: - Scale factor (1.0 on watchOS 200pt, ~2.0 on iPhone 400pt)
+    private var sf: CGFloat { size.width / 200.0 }
+
     // MARK: - Constants
-    private let pilotX: CGFloat = 40
-    private let margin: CGFloat = 15
+    private var pilotX: CGFloat { 40 * sf }
+    private var margin: CGFloat { 15 * sf }
 
     // MARK: - Scene setup
     override func sceneDidLoad() {
@@ -256,10 +259,18 @@ class GameScene: SKScene {
         tapFly.position = CGPoint(x: size.width / 2, y: size.height * 0.15 - 3)
         screenLayer.addChild(tapFly)
 
+        // Dedication
+        let dedication = SKLabelNode(fontNamed: "AvenirNext-MediumItalic")
+        dedication.fontSize = 7 * sf
+        dedication.fontColor = SKColor(white: 1, alpha: 0.7)
+        dedication.text = "For Ahmet Cemil Özdemir"
+        dedication.position = CGPoint(x: size.width / 2, y: size.height * 0.28)
+        screenLayer.addChild(dedication)
+
         // Decorative island
         let island = createIsland(width: 100)
-        island.position = CGPoint(x: size.width / 2, y: 20)
-        island.setScale(0.5)
+        island.position = CGPoint(x: size.width / 2, y: 20 * sf)
+        island.setScale(0.5 * sf)
         screenLayer.addChild(island)
 
         // Bob animation
