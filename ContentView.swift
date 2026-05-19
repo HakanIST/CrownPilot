@@ -57,28 +57,25 @@ struct ContentView: View {
                 Self.scene.handleTap()
             }
         #else
-        ZStack {
-            Color(red: 0.37, green: 0.66, blue: 0.88)
-                .ignoresSafeArea()
-            SpriteView(scene: Self.scene)
-                .ignoresSafeArea()
-        }
-        .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { value in
-                    if let lastY = lastDragY {
-                        let delta = -(value.location.y - lastY)
-                        Self.scene.applyCrownInput(Double(delta) * 0.08)
+        SpriteView(scene: Self.scene, options: [.allowsTransparency])
+            .background(Color(red: 0.37, green: 0.66, blue: 0.88))
+            .ignoresSafeArea()
+            .onTapGesture {
+                Self.scene.handleTap()
+            }
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 10)
+                    .onChanged { value in
+                        if let lastY = lastDragY {
+                            let delta = -(value.location.y - lastY)
+                            Self.scene.applyCrownInput(Double(delta) * 0.08)
+                        }
+                        lastDragY = value.location.y
                     }
-                    lastDragY = value.location.y
-                }
-                .onEnded { _ in
-                    lastDragY = nil
-                }
-        )
-        .onTapGesture {
-            Self.scene.handleTap()
-        }
+                    .onEnded { _ in
+                        lastDragY = nil
+                    }
+            )
         #endif
     }
 }

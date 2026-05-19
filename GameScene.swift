@@ -40,6 +40,7 @@ class GameScene: SKScene {
     // MARK: - Scene setup
     override func sceneDidLoad() {
         super.sceneDidLoad()
+        backgroundColor = SKColor(red: 0.37, green: 0.66, blue: 0.88, alpha: 1.0)
         best = UserDefaults.standard.integer(forKey: "cp-best")
         setupSky()
         setupClouds()
